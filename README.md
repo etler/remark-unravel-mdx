@@ -50,7 +50,7 @@ yarn add remark-unravel-mdx
 
 ```html
 <script type="module">
-  import {remarkUnravelJsx} from 'https://esm.sh/remark-unravel-mdx@1?bundle'
+  import {remarkUnravelJsx} from 'https://esm.sh/remark-unravel-mdx?bundle'
 </script>
 ```
 
