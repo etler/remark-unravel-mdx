@@ -3,15 +3,13 @@
   "version": "0.0.0",
   "repository": "github:etler/node-simple-library-template",
   "license": "MIT",
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
+  "module": "dist/index.js",
   "type": "module",
   "types": "types/index.d.ts",
   "exports": {
     ".": {
       "types": "./types/index.d.ts",
-      "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js"
+      "import": "./dist/index.js"
     }
   },
   "files": [
