@@ -1,6 +1,6 @@
 # remark-unravel-mdx
 
-**[remark][]** plugin to unwrap paragraph elements that only contain [MDX][] JSX elements.
+**[remark][]** plugin to unwrap paragraph elements that only contain [MDX][] JSX elements and paragraphs inside MDX components.
 
 ## Contents
 
@@ -20,19 +20,21 @@
 
 ## What is this?
 
-This package is a [unified][] ([remark][]) plugin that removes paragraph wrappers around MDX JSX elements when they are the only content (aside from whitespace) in a paragraph.
+This package is a [unified][] ([remark][]) plugin that removes paragraph wrappers in two scenarios:
 
-When working with MDX, markdown paragraphs that contain only JSX components get wrapped in `<p>` tags, which is often undesirable. This plugin removes those unnecessary paragraph wrappers.
+1. **Paragraphs containing only JSX elements**: When a paragraph contains only MDX JSX elements (and whitespace), the paragraph wrapper is removed.
+2. **Single paragraph inside MDX components**: When MDX components have exactly one paragraph child, that paragraph is unwrapped to prevent styling conflicts. Components with multiple children preserve their paragraph structure for safety.
 
 ## When should I use this?
 
-This plugin is useful when you're using MDX and want to prevent JSX components from being wrapped in paragraph elements. This is particularly important when:
+This plugin is useful when you're using MDX and want to prevent unnecessary paragraph wrapping. This is particularly important when:
 
 - Your JSX components are block-level elements that shouldn't be inside paragraphs
 - You want cleaner HTML output without unnecessary `<p>` wrapper elements
 - You're building a content pipeline where paragraph wrapping interferes with your component styling
+- You want content inside JSX components to render without a paragraph wrapper for better styling control
 
-This plugin only affects paragraphs that contain exclusively MDX JSX elements and whitespace. Regular text content and mixed content paragraphs remain unchanged.
+Regular text content and mixed content paragraphs remain unchanged.
 
 ## Install
 
@@ -63,9 +65,9 @@ This is a regular paragraph.
 
 This paragraph has a <InlineComponent /> inside it.
 
-<div>
-  <p>Nested content</p>
-</div>
+<Card>
+  This content will be unwrapped from its paragraph.
+</Card>
 ```
 
 `example.ts`:
@@ -96,18 +98,16 @@ Running `example.ts` produces an HTML string with the following content:
 <p>This is a regular paragraph.</p>
 <CustomComponent />
 <p>This paragraph has a <InlineComponent /> inside it.</p>
-<div>
-  <p>Nested content</p>
-</div>
+<Card>
+  This content will be unwrapped from its paragraph.
+</Card>
 ```
-
-`<CustomComponent />` is no longer wrapped in a `<p>` element, but the mixed content paragraph with `<InlineComponent />` remains wrapped.
 
 ## API
 
 ### `remarkUnravelJsx()`
 
-Remove paragraph wrappers around MDX JSX elements.
+Remove paragraph wrappers around MDX JSX elements and inside MDX components.
 
 ###### Returns
 
@@ -119,7 +119,9 @@ This plugin modifies the [mdast][] syntax tree by:
 
 1. Finding paragraph nodes that contain only MDX JSX text elements and whitespace
 2. Replacing those paragraph nodes with their children directly
-3. Preserving the original position and structure of the JSX elements
+3. Finding single paragraphs that are the sole child of MDX JSX elements
+4. Unwrapping those single paragraphs by replacing them with their children
+5. Preserving the original position and structure of all elements
 
 For example, this paragraph node:
 

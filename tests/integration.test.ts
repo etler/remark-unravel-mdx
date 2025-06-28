@@ -174,7 +174,7 @@ Here's a paragraph with an <icon /> component inside.
 <footer></footer>`);
     });
 
-    it("unwraps JSX components from paragraphs in nested structures", () => {
+    it("unwraps paragraphs that are immediate children of MDX components", () => {
       const mdxSource = `<card>
   <header>
     <title>Hello World</title>
@@ -187,9 +187,9 @@ Here's a paragraph with an <icon /> component inside.
       const withPlugin = processMdxToHtml(mdxSource, true);
       const withoutPlugin = processMdxToHtml(mdxSource, false);
 
-      // The plugin unwraps <title> from its paragraph, but "Content here" remains in paragraph
+      // The plugin unwraps paragraphs inside components AND JSX elements from paragraphs
       expect(withPlugin).toBe(
-        `<card><header><title>Hello World</title></header><content><p>Content here</p></content></card>`,
+        `<card><header><title>Hello World</title></header><content>Content here</content></card>`,
       );
       expect(withoutPlugin).toBe(
         `<card><header><p><title>Hello World</title></p></header><content><p>Content here</p></content></card>`,
@@ -270,16 +270,16 @@ Thanks for reading!`;
 
       // All flow-level components remain unchanged
       // Mixed content paragraph with highlight is preserved
-      // Both should be identical since we're dealing with flow elements and mixed content
+      // Paragraphs inside components should be unwrapped
       expect(withPlugin).toContain(`<author name="John Doe"></author>`);
-      expect(withPlugin).toContain(`<callout type="warning">`);
+      expect(withPlugin).toContain(`<callout type="warning">This is an important note.</callout>`);
       expect(withPlugin).toContain(`<gallery>`);
       expect(withPlugin).toContain(
         `<p>Here's a mixed paragraph with a <highlight color="yellow">highlighted term</highlight> in the middle.</p>`,
       );
 
       expect(withoutPlugin).toContain(`<author name="John Doe"></author>`);
-      expect(withoutPlugin).toContain(`<callout type="warning">`);
+      expect(withoutPlugin).toContain(`<callout type="warning"><p>This is an important note.</p></callout>`);
       expect(withoutPlugin).toContain(`<gallery>`);
       expect(withoutPlugin).toContain(
         `<p>Here's a mixed paragraph with a <highlight color="yellow">highlighted term</highlight> in the middle.</p>`,
