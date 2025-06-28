@@ -4,51 +4,10 @@ import remarkParse from "remark-parse";
 import remarkMdx from "remark-mdx";
 import remarkRehype from "remark-rehype";
 import rehypeRaw from "rehype-raw";
+import { rehypeMdxElements } from "rehype-mdx-elements";
 import rehypeStringify from "rehype-stringify";
 import { VFile } from "vfile";
-import { visit } from "unist-util-visit";
 import { remarkUnravelJsx } from "@/index.js";
-
-/**
- * Plugin to convert MDX JSX elements to regular HTML elements for testing
- */
-function rehypeMdxJsxToHtml() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return function (tree: any) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    visit(tree, ["mdxJsxFlowElement", "mdxJsxTextElement"], (node: any) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      node.type = "element";
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-      node.tagName = node.name.toLowerCase();
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      node.properties = {};
-
-      // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions, @typescript-eslint/no-unsafe-member-access
-      if (node.attributes) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        for (const attr of node.attributes) {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/strict-boolean-expressions
-          if (attr.type === "mdxJsxAttribute" && attr.name) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-            let attrName = attr.name;
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            if (attr.name === "className") {
-              attrName = "class";
-            }
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/strict-boolean-expressions, @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/no-unsafe-assignment
-            node.properties[attrName] = attr.value || true;
-          }
-        }
-      }
-
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      delete node.name;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      delete node.attributes;
-    });
-  };
-}
 
 // Helper function to process MDX through the pipeline and get HTML output
 function processMdxToHtml(mdxSource: string, usePlugin = true): string {
@@ -66,7 +25,7 @@ function processMdxToHtml(mdxSource: string, usePlugin = true): string {
       allowDangerousHtml: true,
       passThrough: ["mdxJsxFlowElement", "mdxJsxTextElement"],
     })
-    .use(rehypeMdxJsxToHtml)
+    .use(rehypeMdxElements)
     .use(rehypeRaw)
     .use(rehypeStringify, {
       allowDangerousHtml: true,
