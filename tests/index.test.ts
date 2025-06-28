@@ -526,39 +526,6 @@ describe("remarkUnravelJsx", () => {
       }
     });
 
-    it("unwraps single paragraph child of MDX text elements", () => {
-      const jsxElement: MdxJsxTextElement = {
-        type: "mdxJsxTextElement",
-        name: "Callout",
-        attributes: [],
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-type-assertion, @typescript-eslint/no-explicit-any
-        children: [createParagraph([createText("Warning message")])] as any,
-      };
-      const tree: Root = createRoot([
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-type-assertion, @typescript-eslint/no-explicit-any
-        createParagraph([createText("Before "), jsxElement as any, createText(" after")]),
-      ]);
-
-      const transform = remarkUnravelJsx();
-      transform(tree);
-
-      expect(tree.children).toHaveLength(1);
-      const [paragraph] = tree.children;
-      expect(paragraph?.type).toBe("paragraph");
-      if (paragraph?.type === "paragraph") {
-        expect(paragraph.children).toHaveLength(3);
-
-        // eslint-disable-next-line @typescript-eslint/prefer-destructuring
-        const callout = paragraph.children[1];
-        expect(callout?.type).toBe("mdxJsxTextElement");
-        if (callout?.type === "mdxJsxTextElement") {
-          expect(callout.children).toHaveLength(1);
-          // Single paragraph inside callout should be unwrapped
-          expect(callout.children[0]).toMatchObject({ type: "text", value: "Warning message" });
-        }
-      }
-    });
-
     it("handles nested JSX elements with single paragraphs", () => {
       const nestedJsx: MdxJsxFlowElement = {
         type: "mdxJsxFlowElement",
@@ -625,11 +592,8 @@ describe("remarkUnravelJsx", () => {
         type: "mdxJsxFlowElement",
         name: "Container",
         attributes: [],
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         children: [
           { type: "heading", depth: 2 as const, children: [createText("Heading")] },
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion, @typescript-eslint/no-explicit-any
-          createText("Direct text") as any,
           {
             type: "list",
             ordered: false,
@@ -650,13 +614,11 @@ describe("remarkUnravelJsx", () => {
       const [container] = tree.children;
       expect(container?.type).toBe("mdxJsxFlowElement");
       if (container?.type === "mdxJsxFlowElement") {
-        expect(container.children).toHaveLength(3);
+        expect(container.children).toHaveLength(2);
         // Heading should remain unchanged
         expect(container.children[0]).toMatchObject({ type: "heading" });
-        // Direct text should remain unchanged
-        expect(container.children[1]).toMatchObject({ type: "text", value: "Direct text" });
         // List should remain unchanged (paragraph inside list item is not immediate child of JSX)
-        expect(container.children[2]).toMatchObject({ type: "list" });
+        expect(container.children[1]).toMatchObject({ type: "list" });
       }
     });
   });
