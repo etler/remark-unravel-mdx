@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import type { Root, Paragraph, Text } from "mdast";
 import type { MdxJsxFlowElement, MdxJsxTextElement } from "mdast-util-mdx-jsx";
-import { remarkUnravelJsx } from "@/index.js";
+import { remarkUnravelJsx } from "@/index";
 
 const createParagraph = (children: Paragraph["children"]): Paragraph => ({
   type: "paragraph",

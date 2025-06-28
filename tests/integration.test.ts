@@ -7,7 +7,7 @@ import rehypeRaw from "rehype-raw";
 import { rehypeMdxElements } from "rehype-mdx-elements";
 import rehypeStringify from "rehype-stringify";
 import { VFile } from "vfile";
-import { remarkUnravelJsx } from "@/index.js";
+import { remarkUnravelJsx } from "@/index";
 
 // Helper function to process MDX through the pipeline and get HTML output
 function processMdxToHtml(mdxSource: string, usePlugin = true): string {
