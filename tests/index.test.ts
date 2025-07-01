@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import type { Root, Paragraph, Text } from "mdast";
 import type { MdxJsxFlowElement, MdxJsxTextElement } from "mdast-util-mdx-jsx";
-import { remarkUnravelJsx } from "@/index";
+import { remarkUnravelMdx } from "@/index";
 
 const createParagraph = (children: Paragraph["children"]): Paragraph => ({
   type: "paragraph",
@@ -25,12 +25,12 @@ const createRoot = (children: Root["children"]): Root => ({
   children,
 });
 
-describe("remarkUnravelJsx", () => {
+describe("remarkUnravelMdx", () => {
   describe("basic unwrapping", () => {
     it("unwraps paragraphs containing only JSX elements", () => {
       const tree: Root = createRoot([createParagraph([createMdxJsxTextElement("MyComponent")])]);
 
-      const transform = remarkUnravelJsx();
+      const transform = remarkUnravelMdx();
       transform(tree);
 
       expect(tree.children).toHaveLength(1);
@@ -47,7 +47,7 @@ describe("remarkUnravelJsx", () => {
         createParagraph([createText("  "), createMdxJsxTextElement("MyComponent"), createText("  ")]),
       ]);
 
-      const transform = remarkUnravelJsx();
+      const transform = remarkUnravelMdx();
       transform(tree);
 
       expect(tree.children).toHaveLength(3);
@@ -66,7 +66,7 @@ describe("remarkUnravelJsx", () => {
         createParagraph([createMdxJsxTextElement("ComponentA"), createMdxJsxTextElement("ComponentB")]),
       ]);
 
-      const transform = remarkUnravelJsx();
+      const transform = remarkUnravelMdx();
       transform(tree);
 
       expect(tree.children).toHaveLength(2);
@@ -94,7 +94,7 @@ describe("remarkUnravelJsx", () => {
       ]);
       const tree: Root = createRoot([originalParagraph]);
 
-      const transform = remarkUnravelJsx();
+      const transform = remarkUnravelMdx();
       transform(tree);
 
       expect(tree.children).toHaveLength(1);
@@ -113,7 +113,7 @@ describe("remarkUnravelJsx", () => {
       const originalParagraph = createParagraph([createText("This is just regular text.")]);
       const tree: Root = createRoot([originalParagraph]);
 
-      const transform = remarkUnravelJsx();
+      const transform = remarkUnravelMdx();
       transform(tree);
 
       expect(tree.children).toHaveLength(1);
@@ -131,7 +131,7 @@ describe("remarkUnravelJsx", () => {
       ]);
       const tree: Root = createRoot([originalParagraph]);
 
-      const transform = remarkUnravelJsx();
+      const transform = remarkUnravelMdx();
       transform(tree);
 
       expect(tree.children).toHaveLength(1);
@@ -149,7 +149,7 @@ describe("remarkUnravelJsx", () => {
       ]);
       const tree: Root = createRoot([originalParagraph]);
 
-      const transform = remarkUnravelJsx();
+      const transform = remarkUnravelMdx();
       transform(tree);
 
       expect(tree.children).toHaveLength(1);
@@ -167,7 +167,7 @@ describe("remarkUnravelJsx", () => {
       ]);
       const tree: Root = createRoot([originalParagraph]);
 
-      const transform = remarkUnravelJsx();
+      const transform = remarkUnravelMdx();
       transform(tree);
 
       expect(tree.children).toHaveLength(1);
@@ -184,7 +184,7 @@ describe("remarkUnravelJsx", () => {
         createParagraph([createText("\n    "), createMdxJsxTextElement("MyComponent"), createText("\n    ")]),
       ]);
 
-      const transform = remarkUnravelJsx();
+      const transform = remarkUnravelMdx();
       transform(tree);
 
       expect(tree.children).toHaveLength(3);
@@ -203,7 +203,7 @@ describe("remarkUnravelJsx", () => {
         createParagraph([createText(""), createMdxJsxTextElement("MyComponent"), createText("")]),
       ]);
 
-      const transform = remarkUnravelJsx();
+      const transform = remarkUnravelMdx();
       transform(tree);
 
       expect(tree.children).toHaveLength(3);
@@ -222,7 +222,7 @@ describe("remarkUnravelJsx", () => {
         createParagraph([createText("\t  "), createMdxJsxTextElement("MyComponent"), createText("  \t")]),
       ]);
 
-      const transform = remarkUnravelJsx();
+      const transform = remarkUnravelMdx();
       transform(tree);
 
       expect(tree.children).toHaveLength(3);
@@ -246,7 +246,7 @@ describe("remarkUnravelJsx", () => {
         createParagraph([createMdxJsxTextElement("ComponentB")]),
       ]);
 
-      const transform = remarkUnravelJsx();
+      const transform = remarkUnravelMdx();
       transform(tree);
 
       expect(tree.children).toHaveLength(3);
@@ -274,7 +274,7 @@ describe("remarkUnravelJsx", () => {
     it("handles empty tree", () => {
       const tree: Root = createRoot([]);
 
-      const transform = remarkUnravelJsx();
+      const transform = remarkUnravelMdx();
       expect(() => {
         transform(tree);
       }).not.toThrow();
@@ -288,7 +288,7 @@ describe("remarkUnravelJsx", () => {
         createMdxJsxTextElement("DirectJSX"),
       ]);
 
-      const transform = remarkUnravelJsx();
+      const transform = remarkUnravelMdx();
       transform(tree);
 
       expect(tree.children).toHaveLength(3);
@@ -301,7 +301,7 @@ describe("remarkUnravelJsx", () => {
       const emptyParagraph = createParagraph([]);
       const tree: Root = createRoot([emptyParagraph]);
 
-      const transform = remarkUnravelJsx();
+      const transform = remarkUnravelMdx();
       transform(tree);
 
       // Empty paragraphs satisfy "only JSX and whitespace" (vacuously true), so they get unwrapped to nothing
@@ -311,7 +311,7 @@ describe("remarkUnravelJsx", () => {
     it("handles paragraphs with only whitespace", () => {
       const tree: Root = createRoot([createParagraph([createText("   "), createText("\n\t")])]);
 
-      const transform = remarkUnravelJsx();
+      const transform = remarkUnravelMdx();
       transform(tree);
 
       // Whitespace-only paragraphs satisfy "only JSX and whitespace", so they get unwrapped to just the text nodes
@@ -325,7 +325,7 @@ describe("remarkUnravelJsx", () => {
       const textNode = createText("Direct text");
       const tree: Root = createRoot([headingNode, textNode, createParagraph([createMdxJsxTextElement("Component")])]);
 
-      const transform = remarkUnravelJsx();
+      const transform = remarkUnravelMdx();
       transform(tree);
 
       expect(tree.children).toHaveLength(3);
@@ -350,7 +350,7 @@ describe("remarkUnravelJsx", () => {
         },
       ]);
 
-      const transform = remarkUnravelJsx();
+      const transform = remarkUnravelMdx();
       transform(tree);
 
       const [blockquote] = tree.children;
@@ -387,7 +387,7 @@ describe("remarkUnravelJsx", () => {
         },
       ]);
 
-      const transform = remarkUnravelJsx();
+      const transform = remarkUnravelMdx();
       transform(tree);
 
       expect(tree.children[0]).toMatchObject({
@@ -427,7 +427,7 @@ describe("remarkUnravelJsx", () => {
       };
       const tree: Root = createRoot([createParagraph([jsxElement])]);
 
-      const transform = remarkUnravelJsx();
+      const transform = remarkUnravelMdx();
       transform(tree);
 
       expect(tree.children).toHaveLength(1);
@@ -460,7 +460,7 @@ describe("remarkUnravelJsx", () => {
       };
       const tree: Root = createRoot([createParagraph([jsxElement])]);
 
-      const transform = remarkUnravelJsx();
+      const transform = remarkUnravelMdx();
       transform(tree);
 
       expect(tree.children).toHaveLength(1);
@@ -490,7 +490,7 @@ describe("remarkUnravelJsx", () => {
       };
       const tree: Root = createRoot([jsxElement]);
 
-      const transform = remarkUnravelJsx();
+      const transform = remarkUnravelMdx();
       transform(tree);
 
       expect(tree.children).toHaveLength(1);
@@ -512,7 +512,7 @@ describe("remarkUnravelJsx", () => {
       };
       const tree: Root = createRoot([jsxElement]);
 
-      const transform = remarkUnravelJsx();
+      const transform = remarkUnravelMdx();
       transform(tree);
 
       expect(tree.children).toHaveLength(1);
@@ -542,7 +542,7 @@ describe("remarkUnravelJsx", () => {
       };
       const tree: Root = createRoot([nestedJsx]);
 
-      const transform = remarkUnravelJsx();
+      const transform = remarkUnravelMdx();
       transform(tree);
 
       expect(tree.children).toHaveLength(1);
@@ -573,7 +573,7 @@ describe("remarkUnravelJsx", () => {
       };
       const tree: Root = createRoot([jsxElement]);
 
-      const transform = remarkUnravelJsx();
+      const transform = remarkUnravelMdx();
       transform(tree);
 
       expect(tree.children).toHaveLength(1);
@@ -608,7 +608,7 @@ describe("remarkUnravelJsx", () => {
       };
       const tree: Root = createRoot([jsxElement]);
 
-      const transform = remarkUnravelJsx();
+      const transform = remarkUnravelMdx();
       transform(tree);
 
       const [container] = tree.children;
@@ -640,7 +640,7 @@ describe("remarkUnravelJsx", () => {
         },
       ]);
 
-      const transform = remarkUnravelJsx();
+      const transform = remarkUnravelMdx();
       transform(tree);
 
       expect(tree.children).toHaveLength(7);

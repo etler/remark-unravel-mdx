@@ -16,10 +16,10 @@ import { visit } from "unist-util-visit";
  * unified()
  *   .use(remarkParse)
  *   .use(remarkMdx)
- *   .use(remarkUnravelJsx)
+ *   .use(remarkUnravelMdx)
  * ```
  */
-export function remarkUnravelJsx() {
+export function remarkUnravelMdx() {
   return function (tree: Root): void {
     // First pass: unwrap paragraphs containing only JSX elements and whitespace
     visit(tree, "paragraph", (node: Paragraph, index, parent) => {

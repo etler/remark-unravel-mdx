@@ -9,7 +9,7 @@
 - [Install](#install)
 - [Use](#use)
 - [API](#api)
-  - [`unified().use(remarkUnravelJsx)`](#unifieduseremarkUnravelJsx)
+  - [`remarkUnravelMdx()`](#remarkUnravelMdx)
 - [Examples](#examples)
 - [Syntax tree](#syntax-tree)
 - [Compatibility](#compatibility)
@@ -50,7 +50,7 @@ yarn add remark-unravel-mdx
 
 ```html
 <script type="module">
-  import {remarkUnravelJsx} from 'https://esm.sh/remark-unravel-mdx?bundle'
+  import {remarkUnravelMdx} from 'https://esm.sh/remark-unravel-mdx?bundle'
 </script>
 ```
 
@@ -78,13 +78,13 @@ import {remark} from 'remark'
 import remarkMdx from 'remark-mdx'
 import remarkRehype from 'remark-rehype'
 import rehypeStringify from 'rehype-stringify'
-import {remarkUnravelJsx} from 'remark-unravel-mdx'
+import {remarkUnravelMdx} from 'remark-unravel-mdx'
 
 const file = readFileSync('example.mdx')
 
 const result = await remark()
   .use(remarkMdx)
-  .use(remarkUnravelJsx)
+  .use(remarkUnravelMdx)
   .use(remarkRehype)
   .use(rehypeStringify)
   .process(file)
@@ -105,7 +105,7 @@ Running `example.ts` produces an HTML string with the following content:
 
 ## API
 
-### `remarkUnravelJsx()`
+### `remarkUnravelMdx()`
 
 Remove paragraph wrappers around MDX JSX elements and inside MDX components.
 
@@ -142,26 +142,22 @@ Becomes:
 
 ## Related
 
-- [`remark-mdx`][remark-mdx] — support MDX syntax
+- [`remark-mdx`][remark-mdx] — adds support for MDX syntax parsing
+- [`remark-parse`][remark-parse] — parses markdown to remark AST
 - [`remark-rehype`][remark-rehype] — transform remark to rehype
-- [`rehype-sanitize`][rehype-sanitize] — sanitize HTML
 
 ## License
 
 [MIT][license] © [Tim Etler][author]
 
-[npm]: https://docs.npmjs.com/cli/install
 [esm]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
-[esmsh]: https://esm.sh
 [license]: license
-[author]: https://etler.dev
+[author]: https://timetler.com
 [unified]: https://github.com/unifiedjs/unified
 [unified-transformer]: https://github.com/unifiedjs/unified#transformer
 [remark]: https://github.com/remarkjs/remark
 [remark-mdx]: https://github.com/mdx-js/mdx/tree/main/packages/remark-mdx
 [remark-rehype]: https://github.com/remarkjs/remark-rehype
-[rehype-sanitize]: https://github.com/rehypejs/rehype-sanitize
+[remark-parse]: https://github.com/remarkjs/remark/tree/main/packages/remark-parse
 [mdast]: https://github.com/syntax-tree/mdast
 [mdx]: https://mdxjs.com
-[mdx-security]: https://mdxjs.com/docs/troubleshooting-mdx/#security
-[api-remarkUnravelJsx]: #unifieduseremarkUnravelJsx

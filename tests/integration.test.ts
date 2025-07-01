@@ -7,7 +7,7 @@ import rehypeRaw from "rehype-raw";
 import { rehypeMdxElements } from "rehype-mdx-elements";
 import rehypeStringify from "rehype-stringify";
 import { VFile } from "vfile";
-import { remarkUnravelJsx } from "@/index";
+import { remarkUnravelMdx } from "@/index";
 
 // Helper function to process MDX through the pipeline and get HTML output
 function processMdxToHtml(mdxSource: string, usePlugin = true): string {
@@ -16,7 +16,7 @@ function processMdxToHtml(mdxSource: string, usePlugin = true): string {
     .use(remarkMdx)
     .use(
       usePlugin
-        ? remarkUnravelJsx
+        ? remarkUnravelMdx
         : function () {
             /* no-op */
           },
@@ -38,7 +38,7 @@ function processMdxToHtml(mdxSource: string, usePlugin = true): string {
   return String(result).trim();
 }
 
-describe("remarkUnravelJsx Integration Tests", () => {
+describe("remarkUnravelMdx Integration Tests", () => {
   describe("list items with JSX components", () => {
     it("unwraps JSX components from paragraphs in list items when they contain only JSX and whitespace", () => {
       const mdxSource = `- Text <button />`;
