@@ -1,6 +1,6 @@
 {
   "name": "remark-unravel-mdx",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "repository": "github:etler/remark-unravel-mdx",
   "license": "MIT",
   "type": "module",
