@@ -158,9 +158,9 @@ Becomes:
 
 [MIT][license] © [Tim Etler][author]
 
+[license]: LICENSE.md
+[author]: https://github.com/etler
 [esm]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
-[license]: license
-[author]: https://timetler.com
 [unified]: https://github.com/unifiedjs/unified
 [unified-transformer]: https://github.com/unifiedjs/unified#transformer
 [remark]: https://github.com/remarkjs/remark
