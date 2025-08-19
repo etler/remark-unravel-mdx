@@ -61,13 +61,11 @@ yarn add remark-unravel-mdx
 ```md
 This is a regular paragraph.
 
-<CustomComponent />
+This paragraph has an <InlineComponent>inline component</InlineComponent> inside it.
 
-This paragraph has a <InlineComponent /> inside it.
-
-<Card>
+<CustomComponent>
   This content will be unwrapped from its paragraph.
-</Card>
+</CustomComponent>
 ```
 
 `example.ts`:
@@ -76,31 +74,41 @@ This paragraph has a <InlineComponent /> inside it.
 import {readFileSync} from 'node:fs'
 import {remark} from 'remark'
 import remarkMdx from 'remark-mdx'
-import remarkRehype from 'remark-rehype'
-import rehypeStringify from 'rehype-stringify'
 import {remarkUnravelMdx} from 'remark-unravel-mdx'
+import remarkRehype from 'remark-rehype'
+import {rehypeMdxElements} from "rehype-mdx-elements";
+import rehypeStringify from 'rehype-stringify'
 
 const file = readFileSync('example.mdx')
 
 const result = await remark()
   .use(remarkMdx)
   .use(remarkUnravelMdx)
-  .use(remarkRehype)
+  .use(remarkRehype, {
+    passThrough: ["mdxJsxFlowElement", "mdxJsxTextElement"],
+  })
+  .use(rehypeMdxElements)
   .use(rehypeStringify)
   .process(file)
 
 console.log(String(result))
+
 ```
 
 Running `example.ts` produces an HTML string with the following content:
 
 ```html
 <p>This is a regular paragraph.</p>
-<CustomComponent />
-<p>This paragraph has a <InlineComponent /> inside it.</p>
-<Card>
-  This content will be unwrapped from its paragraph.
-</Card>
+<CustomComponent>This component is on one line.</CustomComponent>
+<CustomComponent>This component spans multiple lines</CustomComponent>
+```
+
+If `remarkUnravelMdx` is not used it will produce the following content with paragraph wrappers:
+
+```html
+<p>This is a regular paragraph.</p>
+<p><CustomComponent>This component is on one line.</CustomComponent></p>
+<CustomComponent><p>This component spans multiple lines</p></CustomComponent>
 ```
 
 ## API
