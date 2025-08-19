@@ -41,7 +41,7 @@
     "husky": "~9.1.7",
     "lint-staged": "~15.4.3",
     "prettier": "~3.5.2",
-    "rehype-mdx-elements": "^0.0.1",
+    "rehype-mdx-elements": "^0.1.0",
     "rehype-raw": "^7.0.0",
     "rehype-stringify": "^10.0.1",
     "ts-patch": "~3.3.0",
